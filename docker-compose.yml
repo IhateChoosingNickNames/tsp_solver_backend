@@ -1,0 +1,61 @@
+version: "3.8"
+
+services:
+  web-backend:
+    build:
+      context: .
+    env_file:
+      - .env
+    depends_on:
+      - database
+      - amqp
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    restart: always
+
+  consumer:
+    build:
+      dockerfile: ./Dockerfile_consumer
+    env_file:
+      - .env
+    depends_on:
+      - database
+      - amqp
+    volumes:
+      - .:/app_consumer
+    restart: always
+
+  database:
+    hostname: postgres
+    image: postgres:latest
+    env_file:
+      - .env
+    ports:
+      - ${POSTGRES_EXTERNAL_PORT}:${POSTGRES_PORT}
+    volumes:
+      - db:/var/lib/postgresql/data
+    restart: always
+
+  amqp:
+    hostname: amqp
+    image: rabbitmq:3.10.6-management-alpine
+    env_file:
+      - .env
+    ports:
+      - ${RABBIT_EXTERNAL_PORT}:5672
+      - ${RABBIT_EXTERNAL_WEB_PORT}:15672
+    volumes:
+      - amqp:/var/lib/rabbitmq/
+      - amqp:/var/log/rabbitmq
+    restart: always
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:15672"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+
+volumes:
+  db:
+  amqp:
