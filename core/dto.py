@@ -33,8 +33,8 @@ class Points(BaseModel):
             if point.lat is not None and point.lng is not None:
                 valid_points.append(point)
         model.points = valid_points
-        if len(model.points) > 1000:
-            raise ToManyPointsError("Слишком много точек (> 1000)")
+        if len(model.points) > 200:
+            raise ToManyPointsError("Слишком много точек (> 200)")
         return model
 
 
@@ -63,3 +63,13 @@ class Status(Enum):
 class AMQPMessage(BaseModel):
     id: UUID4
     points: Points
+
+
+class SOMParams(BaseModel):
+    size_multiplier: int = 10
+    iterations: int = 25000
+    decay_nr: float = 99997
+    decay_lr: float = 99997
+    learning_rate: float = 0.8
+    local_search: bool = True
+    verbose: bool = False
