@@ -1,3 +1,4 @@
+from typing import Any
 from uuid import UUID
 
 from sqlalchemy import Uuid, JSON
@@ -13,7 +14,7 @@ class Task(CreatedAtMixin, UpdatedAtMixin, Base):
     __tablename__ = "tasks"
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
-    points: Mapped[list[dict]] = mapped_column(type_=JSON, nullable=True)
+    points: Mapped[dict[str, Any]] = mapped_column(type_=JSON, nullable=True)
     status: Mapped[Status] = mapped_column(
         ENUM(
             Status,

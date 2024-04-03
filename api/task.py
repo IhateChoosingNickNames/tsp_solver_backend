@@ -1,4 +1,6 @@
-from fastapi import APIRouter, UploadFile
+from typing import Annotated
+
+from fastapi import APIRouter, UploadFile, Depends
 from fastapi import status
 from pydantic import UUID4
 
@@ -14,8 +16,11 @@ task_router = APIRouter()
     tags=["Создание задачи"],
     name="Создание задачи",
 )
-async def create_task(file: UploadFile) -> CreatedTaskResponse:
-    return await TaskService().create_task(file)
+async def create_task(
+    file: UploadFile,
+    service: Annotated[TaskService, Depends()],
+) -> CreatedTaskResponse:
+    return await service.create_task(file)
 
 
 @task_router.get(
@@ -24,8 +29,9 @@ async def create_task(file: UploadFile) -> CreatedTaskResponse:
     name="Получение информации о задаче",
 )
 async def get_results(
-        id_: UUID4,
-        limit: int = 100,
-        offset: int = 0,
+    id_: UUID4,
+    service: Annotated[TaskService, Depends()],
+    limit: int = 100,
+    offset: int = 0,
 ) -> TaskDetailDTO:
-    return await TaskService().get_results(id_, limit, offset)
+    return await service.get_results(id_, limit, offset)

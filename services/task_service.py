@@ -40,6 +40,7 @@ class TaskService:
         data = get_data_from_file(file)
         task = await self._create_task_db()
         broker = get_settings(RabbitMqSettings)
+        print(data)
         message = AMQPMessage(
             id=task.id,
             points=data,

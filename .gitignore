@@ -131,10 +131,6 @@ dmypy.json
 # .idea
 .idea
 
-# poetry
-poetry.lock
-pyproject.toml
-
 # env
 .env
 

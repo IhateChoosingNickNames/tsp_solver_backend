@@ -2,7 +2,7 @@ import codecs
 import csv
 from enum import Enum
 
-from fastapi import UploadFile
+from fastapi import UploadFile, HTTPException
 
 from core.dto import TaskDetailDTO, SinglePoint, Points
 from core.exceptions import IncorrectFileFormatError
@@ -30,6 +30,8 @@ def _open_csv_file(file: UploadFile) -> Points:
                 for elem in csv_reader
             ]
         )
+    except HTTPException as err:
+        raise err
     except Exception:
         raise IncorrectFileFormatError(
             "Непредвиденная ошибка при чтении файла.",
